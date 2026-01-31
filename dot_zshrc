@@ -1,0 +1,162 @@
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# starship prompt manager
+eval "$(starship init zsh)"
+
+# zoxide remembers where you go and lets you jump there quickly.
+eval "$(zoxide init zsh)"
+alias cd="z"
+
+# fzf shell integration (if installed via brew, it usually prints instructions too)
+source <(fzf --zsh)
+
+# Make fzf use fd by default
+export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Preview files with bat
+export FZF_DEFAULT_OPTS="--height=60% --layout=reverse --border \
+  --preview 'bat --style=numbers --color=always --line-range :300 {}' \
+  --preview-window=right:60%"
+
+# bat for cat
+alias cat="bat"
+
+# eza replaces ls
+# alias ls="eza --group-directories-first"
+# alias ll="eza -lah --group-directories-first --git"
+# alias la="eza -la --group-directories-first"
+
+alias ls='ls -FC'
+alias ll='ls -l'
+alias la='ls -a'
+
+alias vi=nvim
+alias vim=nvim
+
+# ---- Zsh completion (fast + cached) ----
+# Homebrew completion functions
+if type brew &>/dev/null; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
+autoload -Uz compinit
+
+# Cache compdump in ~/.cache for speed (only rebuild once a day)
+mkdir -p ~/.cache/zsh
+if [[ -n ~/.cache/zsh/zcompdump(#qN.mh+24) ]]; then
+  compinit -d ~/.cache/zsh/zcompdump
+else
+  compinit -C -d ~/.cache/zsh/zcompdump
+fi
+
+# ---- Completion UX ----
+zstyle ':completion:*' menu select
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
+
+# Case-insensitive + partial matching (great for muscle memory)
+zstyle ':completion:*' matcher-list \
+  'm:{a-z}={A-Z}' \
+  'm:{A-Z}={a-z}' \
+  'r:|[._-]=* r:|=*'
+
+# Use cache when completion functions support it
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.cache/zsh
+
+# Helpful: complete . and .. in cd
+zstyle ':completion:*' special-dirs true
+
+# Don’t try to correct typos automatically (can be annoying for commands)
+unsetopt correct
+
+# Faster completion in big dirs / many PATH entries
+zstyle ':completion:*' accept-exact-dirs true
+zstyle ':completion:*' rehash true
+
+# fzf auto completion
+source ~/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+# Make fzf-tab previews pretty with bat/eza
+zstyle ':fzf-tab:complete:*' fzf-preview \
+  '[[ -f $realpath ]] && bat --style=numbers --color=always --line-range :200 $realpath || eza -lah --color=always $realpath'
+
+# ---- Zellij Functions ----
+# Jump to a project and auto-attach/create a Zellij session named after the folder
+zj() {
+  local dir="${1:-.}"
+  cd "$dir" || return 1
+  local name
+  name="$(basename "$PWD")"
+  zellij attach --create "$name"
+}
+
+# Start Zellij with a specific layout
+# Usage: zl dev | zl simple | zl fullstack
+zl() {
+  local layout="${1:-dev}"
+  local layout_file="$HOME/.config/zellij/layouts/${layout}.kdl"
+  if [[ -f "$layout_file" ]]; then
+    zellij --layout "$layout_file"
+  else
+    echo "Layout '$layout' not found. Available layouts:"
+    ls ~/.config/zellij/layouts/*.kdl 2>/dev/null | xargs -n1 basename | sed 's/.kdl$//'
+    return 1
+  fi
+}
+
+# Jump to project with a layout
+# Usage: zjl ~/projects/myapp dev
+zjl() {
+  local dir="${1:-.}"
+  local layout="${2:-dev}"
+  cd "$dir" || return 1
+  local name
+  name="$(basename "$PWD")"
+  local layout_file="$HOME/.config/zellij/layouts/${layout}.kdl"
+  if [[ -f "$layout_file" ]]; then
+    zellij attach --create "$name" --layout "$layout_file"
+  else
+    echo "Layout '$layout' not found, using default session"
+    zellij attach --create "$name"
+  fi
+}
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# ---- History Configuration ----
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits
+setopt SHARE_HISTORY             # Share history between all sessions
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file
+setopt HIST_VERIFY               # Do not execute immediately upon history expansion
+
+# ---- Zsh Plugins ----
+# Autosuggestions (fish-like suggestions from history)
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Syntax highlighting (must be sourced last)
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

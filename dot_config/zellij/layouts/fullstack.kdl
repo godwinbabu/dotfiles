@@ -1,0 +1,19 @@
+// Fullstack layout: editor + server logs + client/tests
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane size="60%" {
+            command "nvim"
+            args "."
+        }
+        pane size="40%" split_direction="horizontal" {
+            pane name="server" size="50%"   // backend server
+            pane name="client" size="50%"   // frontend dev server or tests
+        }
+    }
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

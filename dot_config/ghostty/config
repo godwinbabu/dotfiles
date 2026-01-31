@@ -1,0 +1,10 @@
+# Fonts (use a Nerd Font so Starship icons render well)
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14
+
+# Quality of life
+copy-on-select = true
+scrollback-limit = 200000
+
+# Optional: theme (pick your favorite)
+theme = "Gruvbox Dark"

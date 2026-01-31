@@ -1,0 +1,22 @@
+// ~/.config/zellij/config.kdl
+// See Zellij docs for config + keybinds blocks.  [oai_citation:25‡Zellij](https://zellij.dev/documentation/configuration.html?utm_source=chatgpt.com)
+
+theme "gruvbox-dark"
+
+mouse_mode true
+scroll_buffer_size 20000
+
+copy_command "pbcopy"
+copy_clipboard "primary"
+
+default_shell "zsh"
+
+// Optional: make pane movement feel natural
+keybinds {
+  normal {
+    bind "Alt h" { MoveFocusOrTab "Left"; }
+    bind "Alt j" { MoveFocus "Down"; }
+    bind "Alt k" { MoveFocus "Up"; }
+    bind "Alt l" { MoveFocusOrTab "Right"; }
+  }
+}

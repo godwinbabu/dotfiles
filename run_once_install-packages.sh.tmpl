@@ -1,0 +1,34 @@
+#!/bin/bash
+# This script runs once on new machines to install required packages
+
+{{ if eq .chezmoi.os "darwin" -}}
+# Install Homebrew if not present
+if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+echo "Installing packages via Homebrew..."
+brew install \
+    neovim \
+    zellij \
+    starship \
+    fzf \
+    fd \
+    bat \
+    eza \
+    zoxide \
+    ripgrep \
+    lazygit \
+    zsh-autosuggestions \
+    zsh-syntax-highlighting \
+    chezmoi
+
+# Install Ghostty (if available as cask)
+brew install --cask ghostty 2>/dev/null || echo "Ghostty not available via cask, install manually"
+
+# Install fonts
+brew install --cask font-jetbrains-mono-nerd-font
+
+echo "Package installation complete!"
+{{ end -}}

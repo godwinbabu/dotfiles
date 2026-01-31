@@ -1,0 +1,19 @@
+// Standard development layout: editor + terminal
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane size="70%" {
+            command "nvim"
+            args "."
+        }
+        pane size="30%" split_direction="horizontal" {
+            pane size="70%" // main terminal
+            pane size="30%" // secondary terminal (tests, logs, etc.)
+        }
+    }
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

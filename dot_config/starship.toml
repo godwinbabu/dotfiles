@@ -1,0 +1,60 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+# add_newline = true
+
+# [cmd_duration]
+# min_time = 300
+# show_milliseconds = false
+
+# [git_branch]
+# symbol = " "
+
+# [git_status]
+# disabled = false
+
+# Inserts a blank line between shell prompts for better readability
+add_newline = true
+
+# The order and format of prompt modules
+format = """
+$directory\
+$git_branch\
+$git_status\
+$python\
+$nodejs\
+$package\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true # Shows your repo name even if deep in the path
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "bold red"
+format = '([\[$all_status$ahead_behind\]]($style) )'
+
+[python]
+symbol = "🐍 "
+style = "bold yellow"
+# Only shows if you are in a python project or virtual env
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[nodejs]
+symbol = " "
+style = "bold green"
+# Only shows if a package.json or node_modules exists
+format = 'via [${symbol}($version )]($style)'
+disabled = false
+
+[package]
+disabled = true # Hides redundant npm/pip package version info
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+
