@@ -8,3 +8,7 @@ scrollback-limit = 200000
 
 # Optional: theme (pick your favorite)
 theme = "Gruvbox Dark"
+
+# Save window state
+window-save-state = "always"
+

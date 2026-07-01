@@ -26,9 +26,14 @@ alias vi=nvim
 alias vim=nvim
 
 # eza replaces ls (uncomment when ready)
-# alias ls="eza --group-directories-first"
-# alias ll="eza -lah --group-directories-first --git"
-# alias la="eza -la --group-directories-first"
+# eza aliases
+alias ls='eza --group-directories-first --icons'
+alias l='eza -lbF --git'
+alias ll='eza -lbGF --git --icons --group-directories-first'
+alias la='eza -la --icons --git'
+alias lt='eza --tree --level=2 --icons'
+alias ltr='eza -sold -l -r'
+
 
 # ---- FZF Configuration ----
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
@@ -51,6 +56,9 @@ if [[ -n ~/.cache/zsh/zcompdump(#qN.mh+24) ]]; then
 else
   compinit -C -d ~/.cache/zsh/zcompdump
 fi
+
+# Claude
+export CLAUDE_CODE_NEW_INIT=1
 
 # ---- Completion UX ----
 zstyle ':completion:*' menu select
@@ -126,9 +134,8 @@ source <(fzf --zsh)
 # starship prompt manager
 eval "$(starship init zsh)"
 
-# zoxide (must be last - it redefines cd)
-eval "$(zoxide init zsh)"
-alias cd="z"
+# APPLE IOS TEAM ID
+export IOS_DEVELOPMENT_TEAM=3WZ27HVC5C
 
 # ---- Conda (lazy-loaded to speed up shell startup) ----
 # >>> conda initialize >>>
@@ -145,3 +152,7 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+# Added by Antigravity IDE
+export PATH="/Users/godwinbabu/.antigravity-ide/antigravity-ide/bin:$PATH"
+
